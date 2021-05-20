@@ -4,7 +4,16 @@ In this example I show how to implement multi-tenancy with Asp.net WebApi, EF Co
 
 This is a simple example, but fully functional
 
-The features
+### Features:
+
+* .net 5
+* EF Core 5
+* Postgres
+    * Administrative DB
+    * Tenant DB
+* Migrations
+
+---
 
 ## .env
 
