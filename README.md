@@ -56,7 +56,7 @@ services.AddDbContext<TenantDataContext>(x =>
 // services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 // services.AddCustomDataContext(Configuration);
 
-After migrations where generated, revert these lines.
+After migrations were generated, revert these lines.
 ```
 
 
