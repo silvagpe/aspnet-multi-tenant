@@ -1,0 +1,37 @@
+version: "3.8"
+services:
+
+  # Postgres 
+  #----------------------------------------------------------------------------------  
+  postgres:  
+    image: postgres:13.3    
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      #A senha fica no arquivo .env
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_HOST_AUTH_METHOD: trust
+    # ports:
+    #   - "54322:54322"
+    volumes:
+      - ./postgres/pg_data:/var/lib/postgresql/data    
+      #Ativar os arquivos de configurações '*.conf' após existir a pasta pg_data, caso contrário ocorrerá um erro na inicialização   
+      #- ./postgres/config/postgresql.conf:/var/lib/postgresql/data/postgresql.conf
+      #- ./postgres/config/pg_hba.conf:/var/lib/postgresql/data/pg_hba.conf
+    networks:
+      - multi_tenant_network
+    deploy:
+      resources:
+        limits:
+          #permite o docker 100% de um núcleo / cpus:2 = pode usar até 2 núcleos 100%
+          cpus: 2
+          memory: 4096M        
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -p 54322"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+networks:
+  multi_tenant_network:
+    drive: bridge
