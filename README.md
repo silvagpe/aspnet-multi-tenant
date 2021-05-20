@@ -1,6 +1,6 @@
 # EF Core - Multi Tenancy asp net web api
 
-In this example, I show how to implement multi-tenancy with Asp.net WebApi, EF Core and Postgres.
+In this example I show how to implement multi-tenancy with Asp.net WebApi, EF Core and Postgres.
 
 This is a simple example, but fully functional
 
