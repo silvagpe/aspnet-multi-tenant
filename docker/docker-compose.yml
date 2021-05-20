@@ -3,35 +3,54 @@ services:
 
   # Postgres 
   #----------------------------------------------------------------------------------  
+  
+  #Container name
   postgres:  
+    #Image 
     image: postgres:13.3    
+    #Restart strategy
     restart: unless-stopped
+    #Configurations for postgres
     environment:
+      #The user is inside the .env file
       POSTGRES_USER: ${DB_USER}
-      #A senha fica no arquivo .env
+      #The pass is inside the .env file
       POSTGRES_PASSWORD: ${DB_PASS}
       POSTGRES_HOST_AUTH_METHOD: trust
-    # ports:
-    #   - "54322:54322"
+    
+    #Port to access. Syntax host_port : container_port
+    ports:
+      - "5432:5432"
+
+    #We can use volumes to save external container information
     volumes:
+        #PS! To make it easier I link the volume to the local folder, but I think the best way is to use docker volumes.
       - ./postgres/pg_data:/var/lib/postgresql/data    
-      #Ativar os arquivos de configurações '*.conf' após existir a pasta pg_data, caso contrário ocorrerá um erro na inicialização   
+
+
+      #If you want to customize Postgres configuration you can bind files configuration like the example below.
       #- ./postgres/config/postgresql.conf:/var/lib/postgresql/data/postgresql.conf
       #- ./postgres/config/pg_hba.conf:/var/lib/postgresql/data/pg_hba.conf
+    
+    #We can use the network to isolate a group of container in his networks
     networks:
       - multi_tenant_network
+    #This part I use to define limits the container can use
     deploy:
       resources:
         limits:
           #permite o docker 100% de um núcleo / cpus:2 = pode usar até 2 núcleos 100%
-          cpus: 2
-          memory: 4096M        
+          cpus: 1
+          memory: 512M        
+    #Finnaly, we can use the health check to validate that conainer is working in a healthy way
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -p 54322"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -p 5432"]
       interval: 15s
       timeout: 5s
       retries: 5
 
+#In this part, we defined the network strategy
 networks:
-  multi_tenant_network:
-    drive: bridge
+  #Network name 
+  multi_tenant_network:    
+    driver: bridge
